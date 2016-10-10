@@ -47,7 +47,7 @@ float lerp(float t, float start, float target) {
 }
 
 void Application::OnMouseClick(int button, int state, int mouseX, int mouseY) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 
         Vertex click{lerp(mouseX / (float)width, -1.0f, 1.0f), -lerp(mouseY / (float)height, -1.0f, 1.0f)};
         if (appState == ApplicationState::SHAPE_EDIT) {
