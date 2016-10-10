@@ -17,5 +17,9 @@ struct Color {
     float a;
 };
 
+inline float lerp(float t, float start, float target) {
+    return (1 - t) * start + t * target;
+}
+
 
 #endif //LINE_CLIPPING_ALGORITHM_UTILS_H

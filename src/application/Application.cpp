@@ -42,10 +42,6 @@ void Application::Update() {
     glutSwapBuffers();
 }
 
-float lerp(float t, float start, float target) {
-    return (1 - t) * start + t * target;
-}
-
 void Application::OnMouseClick(int button, int state, int mouseX, int mouseY) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 
