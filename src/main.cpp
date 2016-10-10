@@ -1,25 +1,29 @@
-#include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <iostream>
+#include "Application.h"
 
+static Application app;
 
-void animate() {
-    glViewport(0, 0, 800, 600);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+void display() {
+    app.Update();
+}
 
-    glutSwapBuffers();
+void keyboard(unsigned char key, int x, int y) {
+    app.OnKeyboardStroke(key, x, y);
+}
+
+void mouse(int button, int state, int x, int y) {
+    app.OnMouseClick(button, state, x, y);
 }
 
 int main(int argc, char** argv) {
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(200, 100);
-    glutInitWindowSize(800, 600);
-    glutCreateWindow("Line clipping algorithm demo");
-    glewInit();
+    app.Init(800, 600, argc, argv);
 
-    glutDisplayFunc(animate);
+    glutDisplayFunc(display);
+    glutIdleFunc(display);
+    glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
     glutMainLoop();
 
     return 0;
