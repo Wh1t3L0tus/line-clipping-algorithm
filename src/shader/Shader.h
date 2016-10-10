@@ -21,7 +21,7 @@ public:
     void DestroyProgram();
     void GetCompilationLog(uint32_t shaderObject, uint32_t shaderType);
 
-    inline uint32_t GetProgram() { return m_ProgramObject; }
+    inline uint32_t GetProgram()const { return m_ProgramObject; }
 
 private:
     uint32_t m_ProgramObject;

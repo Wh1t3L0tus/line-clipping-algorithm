@@ -1,3 +1,5 @@
+#version 330
+
 attribute vec2 a_Position;
 
 void main(void) {

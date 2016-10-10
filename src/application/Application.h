@@ -5,7 +5,8 @@
 #ifndef LINE_CLIPPING_ALGORITHM_APPLICATION_H
 #define LINE_CLIPPING_ALGORITHM_APPLICATION_H
 
-#include "shader/Shader.h"
+#include "../shader/Shader.h"
+#include "../shape/Shape.h"
 
 enum ApplicationState {
     WINDOW_EDIT,
@@ -13,10 +14,7 @@ enum ApplicationState {
     RENDER_RESULT
 };
 
-struct Vertex {
-    float x;
-    float y;
-};
+struct Vertex;
 
 class Application {
 
@@ -25,8 +23,6 @@ public:
     ~Application();
 
     void Init(int width, int height, int argc, char **argv);
-
-    void RenderShape();
 
     void Update();
 
@@ -39,11 +35,8 @@ private:
 
     ApplicationState appState;
 
-    Vertex* windowVertices;
-    Vertex* shapeVertices;
-
-    int windowVertexCount;
-    int shapeVertexCount;
+    Shape window;
+    Shape object;
 
     Shader shader;
 };
