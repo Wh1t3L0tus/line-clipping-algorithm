@@ -16,7 +16,9 @@ Mat2X2 Math::getInverseMatrix(const Mat2X2& m) {
                   -m.c * inverseDet,  m.a * inverseDet};
 }
 
-bool Math::isIntersecting(const Segment& a, const Segment& b) {
+IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
+
+    IntersectionResult result{false};
 
     Mat2X2 lambda {
             a.x2 - a.x1, b.x1 - b.x2,
@@ -39,14 +41,13 @@ bool Math::isIntersecting(const Segment& a, const Segment& b) {
 
         // Segment intersection found !
         // if it returns false : intersection is on one of the segments' prolongation
-        return (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f);
+        result.isIntersecting = (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f);
+        if (result.isIntersecting) {
+            result.intersection = Vec2{a.x1, a.y1} + (Vec2{a.x2, a.y2} - Vec2{a.x1, a.y1}) * t;
+        }
     }
 
-    return false;
-}
-
-Vertex Math::getIntersection(const Segment& a, const Segment& b) {
-    return Vertex{0.0f, 0.0f};
+    return result;
 }
 
 bool Math::isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg) {

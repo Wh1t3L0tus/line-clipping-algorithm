@@ -40,16 +40,35 @@ struct Mat2X2 {
             c * col.b + d * col.b
         };
     }
+};
 
+struct Vec2 {
+    float x;
+    float y;
 
+    Vec2 operator+(const Vec2& vec) const {
+        return Vec2{x + vec.x, y + vec.y};
+    }
+
+    Vec2 operator-(const Vec2& vec) const {
+        return Vec2{x - vec.x, y - vec.y};
+    }
+
+    Vec2 operator*(float n) {
+        return Vec2{n * x, n * y};
+    }
+};
+
+struct IntersectionResult {
+    bool isIntersecting;
+    Vec2 intersection;
 };
 
 class Math {
 public:
     static float getDeterminant(const Mat2X2& matrix);
     static Mat2X2 getInverseMatrix(const Mat2X2& matrix);
-    static bool isIntersecting(const Segment& a, const Segment& b);
-    static Vertex getIntersection(const Segment& a, const Segment& b);
+    static IntersectionResult getIntersection(const Segment &a, const Segment &b);
     static bool isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg);
 };
 

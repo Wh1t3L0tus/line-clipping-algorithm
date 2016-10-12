@@ -3,11 +3,12 @@
 //
 
 #include <cassert>
+#include <iostream>
 #include "../src/math/Math.h"
 
 int main(int argc, char** argv) {
 
-    Segment a{
+    Segment a {
         0, 0,
         10, 10
     };
@@ -22,8 +23,11 @@ int main(int argc, char** argv) {
         6, 10
     };
 
-    assert(Math::isIntersecting(a, b));
-    assert(!Math::isIntersecting(b, c));
+    IntersectionResult ab = Math::getIntersection(a, b);
+    IntersectionResult bc = Math::getIntersection(b, c);
+    assert(ab.isIntersecting);
+    std::cout << "Intersection between [a] and [b] : " << ab.intersection.x << ", " << ab.intersection.y << std::endl;
+    assert(!bc.isIntersecting);
 
     return 0;
 }
