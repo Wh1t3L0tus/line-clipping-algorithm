@@ -2,9 +2,11 @@
 // Created by theo on 10/11/16.
 //
 
+#include <cfloat>
 #include "Math.h"
 
-#define EPSILON 0.000001f
+
+#define EPSILON FLT_EPSILON
 
 float Math::getDeterminant(const Mat2X2& m) {
     return m.a * m.d - m.b * m.c;
@@ -18,7 +20,7 @@ Mat2X2 Math::getInverseMatrix(const Mat2X2& m) {
 
 IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
 
-    IntersectionResult result{false};
+    IntersectionResult result{false, false, false, false};
 
     Mat2X2 lambda {
             a.x2 - a.x1, b.x1 - b.x2,
@@ -33,17 +35,33 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
     float lambdaDet = getDeterminant(lambda);
     if (lambdaDet >= -EPSILON && lambdaDet <= EPSILON) {
         // special case : either there is no collision between a and b or they are on the same line
+        // until it causes trouble, let's assume there is no intersection
+        result.isEitherParallelOrMerged = true;
     }
     else {
         Col2 params = getInverseMatrix(lambda) * B;
         float t = params.a;
         float s = params.b;
 
+        result.intersection = Vec2{a.x1, a.y1} + (Vec2{a.x2, a.y2} - Vec2{a.x1, a.y1}) * t;
+
         // Segment intersection found !
-        // if it returns false : intersection is on one of the segments' prolongation
-        result.isIntersecting = (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f);
-        if (result.isIntersecting) {
-            result.intersection = Vec2{a.x1, a.y1} + (Vec2{a.x2, a.y2} - Vec2{a.x1, a.y1}) * t;
+        if (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f) {
+            result.isIntersecting = true;
+        }
+        // Intersection is outside b segment
+        else if (t >= 0.0f && t <= 1.0f) {
+            result.isIntersecting = true;
+            result.isOutsideB = true;
+        }
+        // Intersection is outside a segment
+        else if (s >= 0.0f && s <= 1.0f) {
+            result.isIntersecting = true;
+            result.isOutsideA = true;
+        }
+        // No intersection
+        else {
+            result.isIntersecting = false;
         }
     }
 

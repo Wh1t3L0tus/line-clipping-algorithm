@@ -61,6 +61,9 @@ struct Vec2 {
 
 struct IntersectionResult {
     bool isIntersecting;
+    bool isOutsideA;
+    bool isOutsideB;
+    bool isEitherParallelOrMerged;
     Vec2 intersection;
 };
 

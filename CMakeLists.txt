@@ -4,7 +4,7 @@ project(line_clipping_algorithm)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES src/main.cpp src/shader/Shader.cpp src/shader/Shader.h src/application/Application.cpp src/application/Application.h src/shape/Shape.cpp src/shape/Shape.h src/utility/utils.h src/math/Math.cpp src/math/Math.h)
-set(SOURCE_TEST_FILES tests/mainTest.cpp src/math/Math.cpp src/math/Math.h src/utility/utils.h)
+set(SOURCE_TEST_FILES tests/mainTest.cpp src/math/Math.cpp src/math/Math.h src/utility/utils.h tests/unittest.h tests/unittest.cpp)
 
 add_executable(line_clipping_algorithm ${SOURCE_FILES})
 add_executable(line_clipping_algorithm_tests ${SOURCE_TEST_FILES})
