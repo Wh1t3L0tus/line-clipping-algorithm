@@ -21,6 +21,9 @@ public:
     void ToggleCloseLine();
     void Reset();
 
+    const Vertex* GetVertices() const;
+    int GetVertexCount() const;
+
 private:
     Vertex* vertices;
     int vertexCount;

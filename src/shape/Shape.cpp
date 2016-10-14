@@ -71,3 +71,11 @@ void Shape::Reset() {
     vertexCount = 0;
     isClosed = false;
 }
+
+const Vertex* Shape::GetVertices() const {
+    return vertices;
+}
+
+int Shape::GetVertexCount() const {
+    return vertexCount;
+}

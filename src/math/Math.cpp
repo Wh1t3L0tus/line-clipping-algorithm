@@ -71,3 +71,29 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
 bool Math::isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg) {
     return false;
 }
+
+float Math::dotProduct(const Vec2& a, const Vec2& b) {
+    return a.y * b.x + a.y * b.y;
+}
+
+Vec2 Math::getNormal(const Segment &segment) {
+    return Vec2{segment.y1 - segment.y2, segment.x2 - segment.y1};
+}
+
+std::vector<Segment> Math::generateNormals(int vertexCount, const Vertex* vertices) {
+
+    std::vector<Segment> segments;
+
+    for (int i = 0; i < vertexCount; i += 2) {
+        Segment segment{vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y};
+        segment.interiorNormal = getNormal(segment);
+        segments.push_back(segment);
+    }
+    Segment lastSegment{vertices[vertexCount - 1].x, vertices[vertexCount - 1].y,
+                        vertices[0].x, vertices[0].y
+    };
+
+    segments.push_back(lastSegment);
+
+    return segments;
+}

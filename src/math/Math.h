@@ -6,13 +6,34 @@
 #define LINE_CLIPPING_ALGORITHM_MATH_H
 
 
+#include <vector>
 #include "../utility/utils.h"
+#include "../shape/Shape.h"
+
+struct Vec2 {
+    float x;
+    float y;
+
+    Vec2 operator+(const Vec2& vec) const {
+        return Vec2{x + vec.x, y + vec.y};
+    }
+
+    Vec2 operator-(const Vec2& vec) const {
+        return Vec2{x - vec.x, y - vec.y};
+    }
+
+    Vec2 operator*(float n) {
+        return Vec2{n * x, n * y};
+    }
+};
 
 struct Segment {
     float x1;
     float y1;
     float x2;
     float y2;
+
+    Vec2 interiorNormal;
 };
 
 struct Col2 {
@@ -42,23 +63,6 @@ struct Mat2X2 {
     }
 };
 
-struct Vec2 {
-    float x;
-    float y;
-
-    Vec2 operator+(const Vec2& vec) const {
-        return Vec2{x + vec.x, y + vec.y};
-    }
-
-    Vec2 operator-(const Vec2& vec) const {
-        return Vec2{x - vec.x, y - vec.y};
-    }
-
-    Vec2 operator*(float n) {
-        return Vec2{n * x, n * y};
-    }
-};
-
 struct IntersectionResult {
     bool isIntersecting;
     bool isOutsideA;
@@ -73,6 +77,9 @@ public:
     static Mat2X2 getInverseMatrix(const Mat2X2& matrix);
     static IntersectionResult getIntersection(const Segment &a, const Segment &b);
     static bool isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg);
+    static float dotProduct(const Vec2& a, const Vec2& b);
+    static Vec2 getNormal(const Segment &segment);
+    static std::vector<Segment> generateNormals(int vertexCount, const Vertex* vertices);
 };
 
 

@@ -43,6 +43,10 @@ int main(int argc, char** argv) {
          3, 3.3f
     };
 
+    Vec2 gNormal = Math::getNormal(g);
+    Vec2 gVector{g.x2 - g.x1, g.y2 - g.y1};
+    float dotProduct = Math::dotProduct(gNormal, gVector);
+
     IntersectionResult ab = Math::getIntersection(a, b);
     IntersectionResult bc = Math::getIntersection(b, c);
     IntersectionResult ad = Math::getIntersection(a, d);
@@ -60,6 +64,8 @@ int main(int argc, char** argv) {
 
     isTrue(ae.isEitherParallelOrMerged, "Either parallel or merged case", "Should be either parallel or merged");
     isTrue(fg.isEitherParallelOrMerged, "Either parallel or merged case 2", "Should be either parallel or merged");
+
+    equals(dotProduct, 0.0f, "Dot product and getNormal test", "The dot product of a vector by its normal should be 0.0f");
 
     return 0;
 }
