@@ -33,7 +33,7 @@ struct Segment {
     float x2;
     float y2;
 
-    Vec2 interiorNormal;
+    Vec2 normal;
 };
 
 struct Col2 {
@@ -76,7 +76,7 @@ public:
     static float getDeterminant(const Mat2X2& matrix);
     static Mat2X2 getInverseMatrix(const Mat2X2& matrix);
     static IntersectionResult getIntersection(const Segment &a, const Segment &b);
-    static bool isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg);
+    static bool isPointVisible(const Vec2 &point, const Segment &windowSeg);
     static float dotProduct(const Vec2& a, const Vec2& b);
     static Vec2 getNormal(const Segment &segment);
     static std::vector<Segment> generateNormals(int vertexCount, const Vertex* vertices);

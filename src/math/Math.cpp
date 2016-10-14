@@ -68,16 +68,24 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
     return result;
 }
 
-bool Math::isSegmentVisible(const Segment& shapeSeg, const Segment& windowSeg) {
-    return false;
+bool Math::isPointVisible(const Vec2 &point, const Segment &windowSeg) {
+
+    Vec2 tmp{point.x - windowSeg.x1, point.y - windowSeg.y1};
+    float dotProduct = Math::dotProduct(windowSeg.normal, tmp);
+
+    // dotProduct > 0 : point is on the right
+    // dotProduct < 0 : point is on the left
+    // dotProduct == 0.0f : point is on the segment
+
+    return dotProduct <= 0.0f;
 }
 
 float Math::dotProduct(const Vec2& a, const Vec2& b) {
-    return a.y * b.x + a.y * b.y;
+    return a.x * b.x + a.y * b.y;
 }
 
 Vec2 Math::getNormal(const Segment &segment) {
-    return Vec2{segment.y1 - segment.y2, segment.x2 - segment.y1};
+    return Vec2{segment.y1 - segment.y2, segment.x2 - segment.y1} * -1.0f;
 }
 
 std::vector<Segment> Math::generateNormals(int vertexCount, const Vertex* vertices) {
@@ -86,7 +94,7 @@ std::vector<Segment> Math::generateNormals(int vertexCount, const Vertex* vertic
 
     for (int i = 0; i < vertexCount; i += 2) {
         Segment segment{vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y};
-        segment.interiorNormal = getNormal(segment);
+        segment.normal = getNormal(segment);
         segments.push_back(segment);
     }
     Segment lastSegment{vertices[vertexCount - 1].x, vertices[vertexCount - 1].y,

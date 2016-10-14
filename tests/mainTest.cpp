@@ -9,43 +9,47 @@
 int main(int argc, char** argv) {
 
     Segment a {
-        0, 0,
-        10, 10
+        0.0f, 0.0f,
+        10.0f, 10.0f
     };
 
     Segment b {
-        5, 0,
-        5, 10
+        5.0f, 0.0f,
+        5.0f, 10.0f
     };
 
     Segment c {
-        6, 0,
-        6, 10
+        6.0f, 0.0f,
+        6.0f, 10.0f
     };
 
     Segment d {
-        11, 11,
-        11, 12
+        11.0f, 11.0f,
+        11.0f, 12.0f
     };
 
     Segment e {
-        11, 11,
-        20, 20
+        11.0f, 11.0f,
+        20.0f, 20.0f
     };
 
     Segment f {
-        0, 0,
-        1, 1.1f
+        0.0f, 0.0f,
+        1.0f, 1.1f
     };
 
     Segment g {
-         2, 2.2f,
-         3, 3.3f
+         2.0f, 2.2f,
+         3.0f, 3.3f
     };
 
-    Vec2 gNormal = Math::getNormal(g);
-    Vec2 gVector{g.x2 - g.x1, g.y2 - g.y1};
-    float dotProduct = Math::dotProduct(gNormal, gVector);
+    Segment h {
+        0.0f, 0.0f,
+        1.0f, 0.0f
+    };
+
+    h.normal = Math::getNormal(h);
+    float dotProduct = Math::dotProduct(h.normal, Vec2{h.x2 - h.x1, h.y2 - h.y1});
 
     IntersectionResult ab = Math::getIntersection(a, b);
     IntersectionResult bc = Math::getIntersection(b, c);
@@ -66,6 +70,14 @@ int main(int argc, char** argv) {
     isTrue(fg.isEitherParallelOrMerged, "Either parallel or merged case 2", "Should be either parallel or merged");
 
     equals(dotProduct, 0.0f, "Dot product and getNormal test", "The dot product of a vector by its normal should be 0.0f");
+
+    isTrue(Math::isPointVisible(Vec2{0.0f, 0.0f}, h), "Point visibility : on segment case", "Point on segment should be visible");
+    isTrue(Math::isPointVisible(Vec2{-10.0f, 0.0f}, h), "Point visibility : on segment case (2)", "Point on segment should be visible");
+    isTrue(Math::isPointVisible(Vec2{3.7777f, 0.0f}, h), "Point visibility : on segment case (3)", "Point on segment should be visible");
+
+    Vec2 test{1.0f, 1.0f};
+    isTrue(Math::isPointVisible(test, h), "Point visibility : on the left case", "Point should be visible since it is on the left");
+    isFalse(Math::isPointVisible(Vec2{1.0f, -1.0f}, h), "Point visibility : on the right case", "Point shouldn't be visible since it is on the right");
 
     return 0;
 }
