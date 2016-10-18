@@ -37,13 +37,19 @@ void Application::Update() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     window.Draw(shader, Color{0.0f, 0.0f, 1.0f, 1.0f});
-    object.Draw(shader, Color{1.0f, 0.0f, 0.0f, 1.0f});
+
+    if (clippedShape.GetVertexCount() == 0)
+        object.Draw(shader, Color{1.0f, 0.0f, 0.0f, 1.0f});
+
+    clippedShape.Draw(shader, Color{0.0f, 1.0f, 0.0f, 1.0f});
 
     glutSwapBuffers();
 }
 
 void Application::OnMouseClick(int button, int state, int mouseX, int mouseY) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+
+        clippedShape.Reset();
 
         Vertex click{lerp(mouseX / (float)width, -1.0f, 1.0f), -lerp(mouseY / (float)height, -1.0f, 1.0f)};
         if (appState == ApplicationState::SHAPE_EDIT) {
@@ -59,11 +65,19 @@ void Application::OnKeyboardStroke(unsigned char key, int mouseX, int mouseY) {
 
     if (key == 's') {
         object.Reset();
-        appState = ApplicationState ::SHAPE_EDIT;
+        clippedShape.Reset();
+        appState = ApplicationState::SHAPE_EDIT;
     }
     else if (key == 'w') {
         window.Reset();
-        appState = ApplicationState ::WINDOW_EDIT;
+        clippedShape.Reset();
+        appState = ApplicationState::WINDOW_EDIT;
+    }
+    else if (key == 'r') {
+        appState = ApplicationState::RENDER_RESULT;
+        if (window.IsClosed() && window.GetVertexCount() >= 3 && object.IsClosed() && object.GetVertexCount() >= 3) {
+            Shape::ClipShapes(window, object, clippedShape);
+        }
     }
     else if (key == 'S') {
         object.ToggleCloseLine();

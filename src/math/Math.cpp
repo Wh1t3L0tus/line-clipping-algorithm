@@ -88,7 +88,11 @@ Vec2 Math::getNormal(const Segment &segment) {
     return Vec2{segment.y1 - segment.y2, segment.x2 - segment.y1} * -1.0f;
 }
 
-std::vector<Segment> Math::generateNormals(int vertexCount, const Vertex* vertices) {
+Segment Math::makeSegment(const Vertex& a, const Vertex& b) {
+    return Segment{a.x, a.y, b.x, b.y};
+}
+
+std::vector<Segment> Math::getSegmentsFromVertices(int vertexCount, const Vertex *vertices) {
 
     std::vector<Segment> segments;
 
@@ -100,6 +104,7 @@ std::vector<Segment> Math::generateNormals(int vertexCount, const Vertex* vertic
     Segment lastSegment{vertices[vertexCount - 1].x, vertices[vertexCount - 1].y,
                         vertices[0].x, vertices[0].y
     };
+    lastSegment.normal = getNormal(lastSegment);
 
     segments.push_back(lastSegment);
 

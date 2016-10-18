@@ -79,7 +79,9 @@ public:
     static bool isPointVisible(const Vec2 &point, const Segment &windowSeg);
     static float dotProduct(const Vec2& a, const Vec2& b);
     static Vec2 getNormal(const Segment &segment);
-    static std::vector<Segment> generateNormals(int vertexCount, const Vertex* vertices);
+    static Segment makeSegment(const Vertex& a, const Vertex& b);
+
+    static std::vector<Segment> getSegmentsFromVertices(int vertexCount, const Vertex *vertices);
 };
 
 

@@ -3,9 +3,13 @@
 //
 
 #include <GL/glew.h>
+#include <vector>
+
 #include "Shape.h"
 #include "../shader/Shader.h"
+#include "../math/Math.h"
 
+using namespace std;
 
 Shape::Shape() : vertices(nullptr), vertexCount(0), isClosed(false) {
 }
@@ -78,4 +82,86 @@ const Vertex* Shape::GetVertices() const {
 
 int Shape::GetVertexCount() const {
     return vertexCount;
+}
+
+bool Shape::IsClosed() const {
+    return isClosed;
+}
+
+Vertex* copyVertices(const vector<Vec2> &list) {
+    Vertex* array = new Vertex[list.size()];
+    for (int i = 0; i < list.size(); i++) {
+        array[i] = Vertex{list[i].x, list[i].y};
+    }
+
+    return array;
+}
+
+Vertex* copyVertices(const Vertex* list, int size) {
+    Vertex* array = new Vertex[size];
+    for (int i = 0; i < size; i++) {
+        array[i] = Vertex{list[i].x, list[i].y};
+    }
+
+    return array;
+}
+
+void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape) {
+
+    vector<Vec2> outputVertices;
+
+    int windowVertexCount = window.GetVertexCount();
+    const Vertex* windowVertices = window.GetVertices();
+
+    int shapeVertexCount = shape.GetVertexCount();
+    Vertex* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);
+
+    vector<Segment> windowSegments = Math::getSegmentsFromVertices(windowVertexCount, windowVertices);
+
+    for (int i = 0; i < windowVertexCount - 1; i++) {
+        outputVertices.clear();
+
+        Vertex lastVertex;
+        Vertex currentVertex;
+        for (int j = 0; j < shapeVertexCount; j++) {
+            if (j == 0) {
+                lastVertex = shape.GetVertices()[j];
+            }
+            else {
+                IntersectionResult intersectionResult = Math::getIntersection(Math::makeSegment(currentVertex, shapeVertices[j]), windowSegments[i]);
+                if (intersectionResult.isIntersecting) {
+                    outputVertices.push_back(intersectionResult.intersection);
+                }
+            }
+
+            currentVertex = shapeVertices[j];
+
+            Vec2 point = Vec2{currentVertex.x, currentVertex.y};
+            if (Math::isPointVisible(point, windowSegments[i])) {
+                outputVertices.push_back(point);
+            }
+        }
+
+        if (outputVertices.size() > 0) {
+            IntersectionResult intersectionResult = Math::getIntersection(Math::makeSegment(currentVertex, lastVertex), windowSegments[i]);
+            if (intersectionResult.isIntersecting) {
+                outputVertices.push_back(intersectionResult.intersection);
+            }
+
+            Vertex* toDelete = shapeVertices;
+            shapeVertices = copyVertices(outputVertices);
+            shapeVertexCount = int(outputVertices.size());
+
+            delete [] toDelete;
+        }
+    }
+
+    delete [] shapeVertices;
+
+    // We now have all our vertices for the clipped shape
+    outputShape.Reset();
+    for (Vec2 vec2: outputVertices) {
+        outputShape.AddVertex(Vertex{vec2.x, vec2.y});
+    }
+    outputShape.ToggleCloseLine();
 }

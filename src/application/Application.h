@@ -37,6 +37,7 @@ private:
 
     Shape window;
     Shape object;
+    Shape clippedShape;
 
     Shader shader;
 };

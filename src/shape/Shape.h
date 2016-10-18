@@ -23,6 +23,9 @@ public:
 
     const Vertex* GetVertices() const;
     int GetVertexCount() const;
+    bool IsClosed() const;
+
+    static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);
 
 private:
     Vertex* vertices;
