@@ -24,7 +24,7 @@ void Application::Init(int width, int height, int argc, char **argv) {
     glViewport(0, 0, width, height);
     this->width = width;
     this->height = height;
-    appState = ApplicationState::SHAPE_EDIT;
+    appState = ApplicationState::WINDOW_EDIT;
 
     shader.LoadFragmentShader("./assets/shader/basic.fs.glsl");
     shader.LoadVertexShader("./assets/shader/basic.vs.glsl");
@@ -38,8 +38,9 @@ void Application::Update() {
 
     window.Draw(shader, Color{0.0f, 0.0f, 1.0f, 1.0f});
 
-    if (clippedShape.GetVertexCount() == 0)
+    if (!clippedShape.IsClosed()) {
         object.Draw(shader, Color{1.0f, 0.0f, 0.0f, 1.0f});
+    }
 
     clippedShape.Draw(shader, Color{0.0f, 1.0f, 0.0f, 1.0f});
 
