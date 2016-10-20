@@ -4,6 +4,7 @@
 
 #include <GL/glew.h>
 #include <vector>
+#include <cmath>
 
 #include "Shape.h"
 #include "../shader/Shader.h"
@@ -100,7 +101,7 @@ Vertex* copyVertices(const vector<Vec2> &list) {
 Vertex* copyVertices(const Vertex* list, int size) {
     Vertex* array = new Vertex[size];
     for (int i = 0; i < size; i++) {
-        array[i] = Vertex{list[i].x, list[i].y};
+        array[i] = list[i];
     }
 
     return array;
@@ -118,14 +119,14 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 
     vector<Segment> windowSegments = Math::getSegmentsFromVertices(windowVertexCount, windowVertices);
 
-    for (int i = 0; i < windowVertexCount - 1; i++) {
+    for (int i = 0; i < windowVertexCount; i++) {
         outputVertices.clear();
 
-        Vertex lastVertex;
-        Vertex currentVertex;
+        Vertex lastVertex{NAN, NAN};
+        Vertex currentVertex{NAN, NAN};
         for (int j = 0; j < shapeVertexCount; j++) {
             if (j == 0) {
-                lastVertex = shape.GetVertices()[j];
+                lastVertex = shapeVertices[j];
             }
             else {
                 IntersectionResult intersectionResult = Math::getIntersection(Math::makeSegment(currentVertex, shapeVertices[j]), windowSegments[i]);
