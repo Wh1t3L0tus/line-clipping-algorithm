@@ -3,6 +3,7 @@
 //
 
 #include <cfloat>
+#include <cassert>
 #include "Math.h"
 
 
@@ -51,12 +52,12 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
         }
         // Intersection is outside b segment
         else if (t >= 0.0f && t <= 1.0f) {
-            result.isIntersecting = true;
+            result.isIntersecting = false;
             result.isOutsideB = true;
         }
         // Intersection is outside a segment
         else if (s >= 0.0f && s <= 1.0f) {
-            result.isIntersecting = true;
+            result.isIntersecting = false;
             result.isOutsideA = true;
         }
         // No intersection
@@ -96,7 +97,7 @@ std::vector<Segment> Math::getSegmentsFromVertices(int vertexCount, const Vertex
 
     std::vector<Segment> segments;
 
-    for (int i = 0; i < vertexCount; i += 2) {
+    for (int i = 0; i < vertexCount - 1; i++) {
         Segment segment{vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y};
         segment.normal = getNormal(segment);
         segments.push_back(segment);

@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 
     isFalse(bc.isIntersecting, "Parallel case", "a and b segment never intersect");
 
-    isTrue(ad.isIntersecting, "Intersection outside segment case", "a intersect d");
+    isFalse(ad.isIntersecting, "Intersection outside segment case", "a doesn't intersect d, the intersection is outside one of the segment");
     isTrue(ad.isOutsideA, "Intersection outside segment case", "intersection should be outside the a segment");
     isFalse(ad.isOutsideB, "Intersection outside segment case", "intersection is inside b segment");
 
