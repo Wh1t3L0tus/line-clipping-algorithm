@@ -1,9 +1,12 @@
 #include <GL/freeglut.h>
+#include <thread>
 #include "application/Application.h"
 
 static Application app;
 
 void display() {
+    std::chrono::milliseconds timespan(10);
+    std::this_thread::sleep_for(timespan);
     app.Update();
 }
 
