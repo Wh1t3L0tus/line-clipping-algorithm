@@ -3,7 +3,6 @@
 //
 
 #include <cfloat>
-#include <cassert>
 #include "Math.h"
 
 
@@ -52,7 +51,7 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
         }
         // Intersection is outside b segment
         else if (t >= 0.0f && t <= 1.0f) {
-            result.isIntersecting = false;
+            result.isIntersecting = true;
             result.isOutsideB = true;
         }
         // Intersection is outside a segment
