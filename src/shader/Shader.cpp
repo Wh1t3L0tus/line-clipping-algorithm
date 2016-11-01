@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include "Shader.h"
 
 using namespace std;
