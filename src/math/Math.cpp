@@ -85,7 +85,7 @@ float Math::dotProduct(const Vec2& a, const Vec2& b) {
 }
 
 Vec2 Math::getNormal(const Segment &segment) {
-    return Vec2{segment.y1 - segment.y2, segment.x2 - segment.y1} * -1.0f;
+    return Vec2{segment.y1 - segment.y2, segment.x2 - segment.x1} * -1.0f;
 }
 
 Segment Math::makeSegment(const Vertex& a, const Vertex& b) {
