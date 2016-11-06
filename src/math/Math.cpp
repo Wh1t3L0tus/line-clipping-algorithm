@@ -45,19 +45,27 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
 
         result.intersection = Vec2{a.x1, a.y1} + (Vec2{a.x2, a.y2} - Vec2{a.x1, a.y1}) * t;
 
-        // Segment intersection found !
+        // Segments intersect each other
         if (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f) {
             result.isIntersecting = true;
         }
-        // Intersection is outside b segment
-        else if (t >= 0.0f && t <= 1.0f) {
-            result.isIntersecting = true;
-            result.isOutsideB = true;
-        }
-        // Intersection is outside a segment
-        else if (s >= 0.0f && s <= 1.0f) {
+        // Intersection is both outside a and b
+        else if ((t < 0.0f || t > 1.0f) && (s < 0.0f || s > 1.0f)) {
             result.isIntersecting = false;
             result.isOutsideA = true;
+            result.isOutsideB = true;
+        }
+        // Intersection is outside a
+        else if (t < 0.0f || t > 1.0f) {
+            result.isIntersecting = false;
+            result.isOutsideA = true;
+            result.isOutsideB = false;
+        }
+        // Intersection is outside b
+        else if (s < 0.0f || s > 1.0f) {
+            result.isIntersecting = true;
+            result.isOutsideB = true;
+            result.isOutsideA = false;
         }
         // No intersection
         else {

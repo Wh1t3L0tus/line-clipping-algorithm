@@ -90,6 +90,11 @@ bool Shape::IsClosed() const {
 }
 
 Vertex* copyVertices(const vector<Vec2> &list) {
+
+    if (list.size() == 0) {
+        return nullptr;
+    }
+
     Vertex* array = new Vertex[list.size()];
     for (int i = 0; i < list.size(); i++) {
         array[i] = Vertex{list[i].x, list[i].y};
@@ -119,7 +124,7 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 
     vector<Segment> windowSegments = Math::getSegmentsFromVertices(windowVertexCount, windowVertices);
 
-    for (int i = 0; i < windowVertexCount; i++) {
+    for (int i = 0; i < windowSegments.size(); i++) {
         outputVertices.clear();
 
         Vertex lastVertex{NAN, NAN};
@@ -148,13 +153,13 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
             if (intersectionResult.isIntersecting) {
                 outputVertices.push_back(intersectionResult.intersection);
             }
-
-            Vertex* toDelete = shapeVertices;
-            shapeVertices = copyVertices(outputVertices);
-            shapeVertexCount = int(outputVertices.size());
-
-            delete [] toDelete;
         }
+
+        Vertex* toDelete = shapeVertices;
+        shapeVertices = copyVertices(outputVertices);
+        shapeVertexCount = int(outputVertices.size());
+
+        delete [] toDelete;
     }
 
     delete [] shapeVertices;
