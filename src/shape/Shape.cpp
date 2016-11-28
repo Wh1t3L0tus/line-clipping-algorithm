@@ -5,6 +5,9 @@
 #include <GL/glew.h>
 #include <vector>
 #include <cmath>
+#include <cstdio>
+#include <iostream>
+
 
 #include "Shape.h"
 #include "../shader/Shader.h"
@@ -81,6 +84,15 @@ const Vertex* Shape::GetVertices() const {
     return vertices;
 }
 
+const Vertex* Shape::ReverseVertices() const {
+	Vertex* reversed = new Vertex[vertexCount];
+	for (int i = 0; i < vertexCount; i++)
+	{
+		reversed[i] = vertices[vertexCount - i - 1];
+	}
+	return reversed;
+}
+
 int Shape::GetVertexCount() const {
     return vertexCount;
 }
@@ -118,6 +130,33 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 
     int windowVertexCount = window.GetVertexCount();
     const Vertex* windowVertices = window.GetVertices();
+	// Methode pour inverser l'ordre des points si ils ont été entrés dans le mauvais sens (sens horaire)
+	int indexTopVertice = 0;
+	for (int i = 1; i < windowVertexCount; i++) // obtenir le vertice le plus haut placé
+	{
+		if (windowVertices[i].y > windowVertices[indexTopVertice].y)
+		{
+			indexTopVertice = i;
+		}
+	}
+	int startSeg, endSeg; // Index des points servant à faire le segment
+	if (indexTopVertice = 0)
+	{
+		startSeg = windowVertexCount - 1;
+	}
+	else
+	{
+		startSeg = indexTopVertice - 1;
+	}
+	endSeg = indexTopVertice;
+	Segment seg = Math::makeSegment(windowVertices[startSeg], windowVertices[endSeg]);
+	Vec2 pointToCheck = Vec2{ windowVertices[indexTopVertice + 1].x, windowVertices[indexTopVertice + 1].y };
+	static bool checkOrder = Math::isPointVisible(pointToCheck, seg); //Normalement true = bon sens, false = mauvais sens
+	std::cout << checkOrder;
+	if (!checkOrder) // Fenêtre entrée dans le mauvais sens
+	{
+		windowVertices = window.ReverseVertices();
+	}
 
     int shapeVertexCount = shape.GetVertexCount();
     Vertex* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);

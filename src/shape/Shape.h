@@ -22,6 +22,7 @@ public:
     void Reset();
 
     const Vertex* GetVertices() const;
+	const Vertex* ReverseVertices() const;
     int GetVertexCount() const;
     bool IsClosed() const;
 
