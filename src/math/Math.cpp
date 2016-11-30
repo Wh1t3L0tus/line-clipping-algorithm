@@ -79,7 +79,8 @@ IntersectionResult Math::getIntersection(const Segment &a, const Segment &b) {
 bool Math::isPointVisible(const Vec2 &point, const Segment &windowSeg) {
 
     Vec2 tmp{point.x - windowSeg.x1, point.y - windowSeg.y1};
-    float dotProduct = Math::dotProduct(windowSeg.normal, tmp);
+	Vec2 normal = getNormal(windowSeg);
+    float dotProduct = Math::dotProduct(normal, tmp);
 
     // dotProduct > 0 : point is on the right
     // dotProduct < 0 : point is on the left

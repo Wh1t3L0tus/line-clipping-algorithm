@@ -140,7 +140,7 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 		}
 	}
 	int startSeg, endSeg; // Index des points servant à faire le segment
-	if (indexTopVertice = 0)
+	if (indexTopVertice == 0)
 	{
 		startSeg = windowVertexCount - 1;
 	}
@@ -150,12 +150,12 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 	}
 	endSeg = indexTopVertice;
 	Segment seg = Math::makeSegment(windowVertices[startSeg], windowVertices[endSeg]);
-	Vec2 pointToCheck = Vec2{ windowVertices[indexTopVertice + 1].x, windowVertices[indexTopVertice + 1].y };
+	Vec2 pointToCheck = Vec2{ windowVertices[(indexTopVertice + 1) % windowVertexCount].x, windowVertices[(indexTopVertice + 1) % windowVertexCount].y }; // Point à testé, à 0 si le piont au sommet est le dernier du tableau de vertex
 	static bool checkOrder = Math::isPointVisible(pointToCheck, seg); //Normalement true = bon sens, false = mauvais sens
-	std::cout << checkOrder;
+	std::cout << checkOrder; 
 	if (!checkOrder) // Fenêtre entrée dans le mauvais sens
 	{
-		windowVertices = window.ReverseVertices();
+		windowVertices = window.ReverseVertices(); // inverse l'ordre des vertex de la shape
 	}
 
     int shapeVertexCount = shape.GetVertexCount();

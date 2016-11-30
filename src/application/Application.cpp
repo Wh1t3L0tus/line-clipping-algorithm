@@ -4,6 +4,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <iostream>
 #include "Application.h"
 
 Application::Application() {
