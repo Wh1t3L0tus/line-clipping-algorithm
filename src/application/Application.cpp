@@ -4,7 +4,9 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <iostream>
 #include "Application.h"
+#include "../utility/ScreenUtils.h"
 
 Application::Application() {
 }
@@ -29,6 +31,12 @@ void Application::Init(int width, int height, int argc, char **argv) {
     shader.LoadFragmentShader("./assets/shader/basic.fs.glsl");
     shader.LoadVertexShader("./assets/shader/basic.vs.glsl");
     shader.CreateProgram();
+
+    window.SetColor(Color{0, 0, 255});
+    clippedShape.SetColor(Color{0, 255, 0});
+    object.SetColor(Color{255, 0, 0});
+
+    ScreenUtils::InitScreenBuffer();
 }
 
 
@@ -36,13 +44,12 @@ void Application::Update() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    window.Draw(shader, Color{0.0f, 0.0f, 1.0f, 1.0f});
-
+    window.Draw(shader);
     if (!clippedShape.IsClosed()) {
-        object.Draw(shader, Color{1.0f, 0.0f, 0.0f, 1.0f});
+        object.Draw(shader);
     }
-
-    clippedShape.Draw(shader, Color{0.0f, 1.0f, 0.0f, 1.0f});
+    clippedShape.Draw(shader);
+    testShape.Draw(shader);
 
     glutSwapBuffers();
 }
@@ -52,7 +59,7 @@ void Application::OnMouseClick(int button, int state, int mouseX, int mouseY) {
 
         clippedShape.Reset();
 
-        Vertex click{lerp(mouseX / (float)width, -1.0f, 1.0f), -lerp(mouseY / (float)height, -1.0f, 1.0f)};
+        Vertex click{fLerp(mouseX / (float) width, -1.0f, 1.0f), -fLerp(mouseY / (float) height, -1.0f, 1.0f)};
         if (appState == ApplicationState::SHAPE_EDIT) {
             object.AddVertex(click);
         }
@@ -85,6 +92,12 @@ void Application::OnKeyboardStroke(unsigned char key, int mouseX, int mouseY) {
     }
     else if (key == 'W') {
         window.ToggleCloseLine();
+    }
+    else if (key == 'f') {
+        window.FillShape();
+    }
+    else if (key == 'F') {
+        window.Clear();
     }
     else if (key == 27) {
         glutLeaveMainLoop();

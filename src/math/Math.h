@@ -25,6 +25,10 @@ struct Vec2 {
     Vec2 operator*(float n) {
         return Vec2{n * x, n * y};
     }
+
+    Vec2& Normalize();
+
+    float GetMagnitude() const;
 };
 
 struct Segment {
@@ -80,8 +84,9 @@ public:
     static float dotProduct(const Vec2& a, const Vec2& b);
     static Vec2 getNormal(const Segment &segment);
     static Segment makeSegment(const Vertex& a, const Vertex& b);
-
     static std::vector<Segment> getSegmentsFromVertices(int vertexCount, const Vertex *vertices);
+    static float getAngleBetween(const Vec2& a, const Vec2& b);
+    static bool isPointInside(const Vertex* vertices, unsigned int vertexCount, const Vec2& point);
 };
 
 

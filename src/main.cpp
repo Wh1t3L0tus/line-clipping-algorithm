@@ -1,5 +1,6 @@
 #include <GL/freeglut.h>
 #include <thread>
+#include <iostream>
 #include "application/Application.h"
 
 static Application app;

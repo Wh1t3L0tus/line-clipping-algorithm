@@ -3,7 +3,7 @@ project(line_clipping_algorithm)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES src/main.cpp src/shader/Shader.cpp src/shader/Shader.h src/application/Application.cpp src/application/Application.h src/shape/Shape.cpp src/shape/Shape.h src/utility/utils.h src/math/Math.cpp src/math/Math.h)
+set(SOURCE_FILES src/main.cpp src/shader/Shader.cpp src/shader/Shader.h src/application/Application.cpp src/application/Application.h src/shape/Shape.cpp src/shape/Shape.h src/utility/utils.h src/math/Math.cpp src/math/Math.h src/utility/ScreenUtils.cpp src/utility/ScreenUtils.h src/math/FillingAlgorithm.cpp src/math/FillingAlgorithm.h)
 set(SOURCE_TEST_FILES tests/mainTest.cpp src/math/Math.cpp src/math/Math.h src/utility/utils.h tests/unittest.h tests/unittest.cpp)
 
 add_executable(line_clipping_algorithm ${SOURCE_FILES})
@@ -17,16 +17,6 @@ add_definitions(${GLUT_DEFINITIONS})
 if(NOT GLUT_FOUND)
     message(ERROR " GLUT not found!")
 endif(NOT GLUT_FOUND)
-
-
-# Find  GLU
-find_package(GLU REQUIRED)
-include_directories(${GLU_INCLUDE_DIRS})
-link_directories(${GLU_LIBRARY_DIRS})
-add_definitions(${GLU_DEFINITIONS})
-if(NOT GLU_FOUND)
-    message(ERROR " GLU not found!")
-endif(NOT GLU_FOUND)
 
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
@@ -45,4 +35,4 @@ if(NOT OPENGL_FOUND)
     message(ERROR " OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
-target_link_libraries(line_clipping_algorithm ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLU_LIBRARY} ${GLEW_LIBRARY})
+target_link_libraries(line_clipping_algorithm ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARY})

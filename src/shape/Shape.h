@@ -7,6 +7,7 @@
 
 
 #include "../utility/utils.h"
+#include "../math/Math.h"
 
 class Shader;
 
@@ -16,22 +17,30 @@ public:
     Shape();
     ~Shape();
 
-    void Draw(const Shader& shader, const Color& color);
+    void Draw(const Shader& shader);
     void AddVertex(const Vertex& vertex);
     void ToggleCloseLine();
     void Reset();
 
     const Vertex* GetVertices() const;
-    int GetVertexCount() const;
+    unsigned int GetVertexCount() const;
     bool IsClosed() const;
+
+    void SetColor(const Color& color);
+    void FillShape(const Color& color, const Vertex& mousePos);
+    void FillShape();
+    void Clear();
 
     static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);
 
 private:
+    Color shapeColor;
     Vertex* vertices;
     int vertexCount;
     bool isClosed;
 
+    Vertex* filledAreaVertices;
+    int filledAreaVertexCount;
 };
 
 

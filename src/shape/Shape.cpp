@@ -5,43 +5,56 @@
 #include <GL/glew.h>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #include "Shape.h"
 #include "../shader/Shader.h"
-#include "../math/Math.h"
+#include "../math/FillingAlgorithm.h"
 
 using namespace std;
 
-Shape::Shape() : vertices(nullptr), vertexCount(0), isClosed(false) {
+Shape::Shape() : vertices(nullptr), vertexCount(0), isClosed(false), filledAreaVertices(nullptr), filledAreaVertexCount(0) {
 }
 
 Shape::~Shape() {
     Reset();
 }
 
-void Shape::Draw(const Shader& shader, const Color& color) {
+void Shape::Draw(const Shader& shader) {
 
     if (vertices != nullptr) {
         int colorId = glGetUniformLocation(shader.GetProgram(), "color");
-        glUseProgram(shader.GetProgram());
-        glUniform4f(colorId, color.r, color.g, color.b, color.a);
+        int positionLocation = glGetAttribLocation(shader.GetProgram(), "a_Position");
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(0);
+        glUseProgram(shader.GetProgram());
+        glUniform3f(colorId, shapeColor.r / 255.0f, shapeColor.g / 255.0f, shapeColor.b / 255.0f);
+
+        glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(positionLocation);
         if (isClosed) {
             glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
         }
         else {
             glDrawArrays(GL_LINE_STRIP, 0, vertexCount);
         }
-        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(positionLocation);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(positionLocation);
         glPointSize(4);
         glDrawArrays(GL_POINTS, 0, vertexCount);
         glPointSize(1);
-        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(positionLocation);
+
+        if (filledAreaVertices != nullptr) {
+            glUseProgram(shader.GetProgram());
+            glUniform3f(colorId, shapeColor.r / 255.0f, shapeColor.g / 255.0f, shapeColor.b / 255.0f);
+
+            glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, filledAreaVertices);
+            glEnableVertexAttribArray(positionLocation);
+            glDrawArrays(GL_POINTS, 0, filledAreaVertexCount);
+            glEnableVertexAttribArray(positionLocation);
+        }
 
         glUseProgram(0);
     }
@@ -69,6 +82,7 @@ void Shape::ToggleCloseLine() {
 }
 
 void Shape::Reset() {
+    Clear();
     if (vertices != nullptr) {
         delete [] vertices;
         vertices = nullptr;
@@ -81,7 +95,7 @@ const Vertex* Shape::GetVertices() const {
     return vertices;
 }
 
-int Shape::GetVertexCount() const {
+unsigned int Shape::GetVertexCount() const {
     return vertexCount;
 }
 
@@ -110,6 +124,51 @@ Vertex* copyVertices(const Vertex* list, int size) {
     }
 
     return array;
+}
+
+void Shape::SetColor(const Color &color) {
+    shapeColor = color;
+}
+
+void Shape::FillShape(const Color& color, const Vertex& mousePos) {
+
+    if (!isClosed || vertexCount < 3) {
+        return;
+    }
+
+    Vertex inShapePoint = mousePos;
+
+    vector<Vertex> filledArea;
+    int x = iLerp((inShapePoint.x + 1.0f) / 2.0f, 0, 800);
+    int y = iLerp((inShapePoint.y + 1.0f) / 2.0f, 0, 600);
+    FillingAlgorithm::FloodFill(x, y, shapeColor, color, filledArea);
+
+    filledAreaVertexCount = int(filledArea.size());
+    filledAreaVertices = new Vertex[filledAreaVertexCount];
+    for (int i = 0; i < filledAreaVertexCount; i++) {
+        filledAreaVertices[i] = filledArea[i];
+    }
+}
+
+void Shape::FillShape() {
+
+    std::vector<Vertex> filledArea;
+    FillingAlgorithm::BoundingBoxFill(GetVertices(), GetVertexCount(), shapeColor, filledArea);
+
+    Clear();
+    filledAreaVertexCount = int(filledArea.size());
+    filledAreaVertices = new Vertex[filledAreaVertexCount];
+    for (int i = 0; i < filledAreaVertexCount; i++) {
+        filledAreaVertices[i] = filledArea[i];
+    }
+}
+
+void Shape::Clear() {
+    if (filledAreaVertices != nullptr) {
+        filledAreaVertexCount = 0;
+        delete[] filledAreaVertices;
+        filledAreaVertices = nullptr;
+    }
 }
 
 void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape) {
