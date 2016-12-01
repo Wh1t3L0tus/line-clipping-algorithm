@@ -7,9 +7,7 @@
 
 class FillingAlgorithm {
 public:
-    static void FloodFill(int x, int y, const Color &edgeColor, const Color& fillColor, std::vector<Vertex> &filledRegion);
-
-    static void BoundingBoxFill(const Vertex* vertex, unsigned int vertexCount, const Color& fillColor, std::vector<Vertex> & filledRegion);
+    static void BoundingBoxFill(const Vec2* vertex, unsigned int vertexCount, const Color& fillColor, std::vector<Vec2>& filledRegion);
 };
 
 

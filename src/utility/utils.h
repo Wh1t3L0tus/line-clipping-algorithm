@@ -5,11 +5,6 @@
 #ifndef LINE_CLIPPING_ALGORITHM_UTILS_H
 #define LINE_CLIPPING_ALGORITHM_UTILS_H
 
-struct Vertex {
-    float x;
-    float y;
-};
-
 struct Color {
     unsigned char r;
     unsigned char g;
@@ -22,11 +17,6 @@ struct Color {
     bool operator==(const Color& color) {
         return r == color.r && g == color.g && b == color.b;
     }
-};
-
-struct ColoredVertex {
-    Vertex vertex;
-    Color color;
 };
 
 inline float fLerp(float t, float start, float target) {

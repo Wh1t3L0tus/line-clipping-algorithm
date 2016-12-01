@@ -4,9 +4,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <iostream>
 #include "Application.h"
-#include "../utility/ScreenUtils.h"
 
 Application::Application() {
 }
@@ -35,8 +33,6 @@ void Application::Init(int width, int height, int argc, char **argv) {
     window.SetColor(Color{0, 0, 255});
     clippedShape.SetColor(Color{0, 255, 0});
     object.SetColor(Color{255, 0, 0});
-
-    ScreenUtils::InitScreenBuffer();
 }
 
 
@@ -59,7 +55,7 @@ void Application::OnMouseClick(int button, int state, int mouseX, int mouseY) {
 
         clippedShape.Reset();
 
-        Vertex click{fLerp(mouseX / (float) width, -1.0f, 1.0f), -fLerp(mouseY / (float) height, -1.0f, 1.0f)};
+        Vec2 click{fLerp(mouseX / (float) width, -1.0f, 1.0f), -fLerp(mouseY / (float) height, -1.0f, 1.0f)};
         if (appState == ApplicationState::SHAPE_EDIT) {
             object.AddVertex(click);
         }

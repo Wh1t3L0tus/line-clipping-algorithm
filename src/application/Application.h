@@ -39,7 +39,6 @@ private:
     Shape object;
     Shape clippedShape;
     Shape testShape;
-    bool testProbe;
     Shader shader;
 };
 

@@ -6,25 +6,9 @@
 #include <cmath>
 #include <iostream>
 #include "Math.h"
-#include "../utility/ScreenUtils.h"
 
 
 #define EPSILON FLT_EPSILON
-
-Vec2& Vec2::Normalize() {
-    float magnitude = GetMagnitude();
-
-    if (magnitude != 0.0f) {
-        x = x / magnitude;
-        y = y / magnitude;
-    }
-    else {
-        x = NAN;
-        y = NAN;
-    }
-
-    return *this;
-}
 
 float Vec2::GetMagnitude() const {
     return float(sqrt(x * x + y * y));
@@ -118,11 +102,11 @@ Vec2 Math::getNormal(const Segment &segment) {
     return Vec2{segment.y1 - segment.y2, segment.x2 - segment.x1} * -1.0f;
 }
 
-Segment Math::makeSegment(const Vertex& a, const Vertex& b) {
+Segment Math::makeSegment(const Vec2& a, const Vec2& b) {
     return Segment{a.x, a.y, b.x, b.y};
 }
 
-std::vector<Segment> Math::getSegmentsFromVertices(int vertexCount, const Vertex *vertices) {
+std::vector<Segment> Math::getSegmentsFromVertices(int vertexCount, const Vec2 *vertices) {
 
     std::vector<Segment> segments;
 
@@ -157,18 +141,15 @@ float Math::getAngleBetween(const Vec2& a, const Vec2& b) {
 
 }
 
-bool Math::isPointInside(const Vertex* vertices, unsigned int vertexCount, const Vec2& point) {
+bool Math::isPointInside(const Vec2* vertices, unsigned int vertexCount, const Vec2& point) {
 
     float anglesSum = 0.0f;
-    Vertex firstVertex = vertices[0];
+    Vec2 firstVertex = vertices[0];
     Vec2 lastVector = Vec2{firstVertex.x - point.x, firstVertex.y - point.y};
 
     for (int i = 1; i < vertexCount; i++) {
-        Vertex currentVertex = vertices[i];
+        Vec2 currentVertex = vertices[i];
         Vec2 currentVector = Vec2{currentVertex.x - point.x, currentVertex.y - point.y};
-        if (Math::getAngleBetween(lastVector, currentVector) < 0.0f) {
-            std::cout << "negative number detected" << std::endl;
-        }
         anglesSum += Math::getAngleBetween(lastVector, currentVector);
         lastVector = currentVector;
     }

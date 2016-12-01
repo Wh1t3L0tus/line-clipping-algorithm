@@ -60,9 +60,9 @@ void Shape::Draw(const Shader& shader) {
     }
 }
 
-void Shape::AddVertex(const Vertex& vertex) {
+void Shape::AddVertex(const Vec2& vertex) {
 
-    Vertex* newList = new Vertex[vertexCount + 1];
+    Vec2* newList = new Vec2[vertexCount + 1];
 
     for (int i = 0; i < vertexCount; i++) {
         newList[i] = vertices[i];
@@ -91,7 +91,7 @@ void Shape::Reset() {
     isClosed = false;
 }
 
-const Vertex* Shape::GetVertices() const {
+const Vec2* Shape::GetVertices() const {
     return vertices;
 }
 
@@ -103,22 +103,22 @@ bool Shape::IsClosed() const {
     return isClosed;
 }
 
-Vertex* copyVertices(const vector<Vec2> &list) {
+Vec2* copyVertices(const vector<Vec2> &list) {
 
     if (list.size() == 0) {
         return nullptr;
     }
 
-    Vertex* array = new Vertex[list.size()];
+    Vec2* array = new Vec2[list.size()];
     for (int i = 0; i < list.size(); i++) {
-        array[i] = Vertex{list[i].x, list[i].y};
+        array[i] = Vec2{list[i].x, list[i].y};
     }
 
     return array;
 }
 
-Vertex* copyVertices(const Vertex* list, int size) {
-    Vertex* array = new Vertex[size];
+Vec2* copyVertices(const Vec2* list, int size) {
+    Vec2* array = new Vec2[size];
     for (int i = 0; i < size; i++) {
         array[i] = list[i];
     }
@@ -130,34 +130,14 @@ void Shape::SetColor(const Color &color) {
     shapeColor = color;
 }
 
-void Shape::FillShape(const Color& color, const Vertex& mousePos) {
-
-    if (!isClosed || vertexCount < 3) {
-        return;
-    }
-
-    Vertex inShapePoint = mousePos;
-
-    vector<Vertex> filledArea;
-    int x = iLerp((inShapePoint.x + 1.0f) / 2.0f, 0, 800);
-    int y = iLerp((inShapePoint.y + 1.0f) / 2.0f, 0, 600);
-    FillingAlgorithm::FloodFill(x, y, shapeColor, color, filledArea);
-
-    filledAreaVertexCount = int(filledArea.size());
-    filledAreaVertices = new Vertex[filledAreaVertexCount];
-    for (int i = 0; i < filledAreaVertexCount; i++) {
-        filledAreaVertices[i] = filledArea[i];
-    }
-}
-
 void Shape::FillShape() {
 
-    std::vector<Vertex> filledArea;
+    std::vector<Vec2> filledArea;
     FillingAlgorithm::BoundingBoxFill(GetVertices(), GetVertexCount(), shapeColor, filledArea);
 
     Clear();
     filledAreaVertexCount = int(filledArea.size());
-    filledAreaVertices = new Vertex[filledAreaVertexCount];
+    filledAreaVertices = new Vec2[filledAreaVertexCount];
     for (int i = 0; i < filledAreaVertexCount; i++) {
         filledAreaVertices[i] = filledArea[i];
     }
@@ -176,18 +156,18 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
     vector<Vec2> outputVertices;
 
     int windowVertexCount = window.GetVertexCount();
-    const Vertex* windowVertices = window.GetVertices();
+    const Vec2* windowVertices = window.GetVertices();
 
     int shapeVertexCount = shape.GetVertexCount();
-    Vertex* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);
+    Vec2* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);
 
     vector<Segment> windowSegments = Math::getSegmentsFromVertices(windowVertexCount, windowVertices);
 
     for (int i = 0; i < windowSegments.size(); i++) {
         outputVertices.clear();
 
-        Vertex lastVertex{NAN, NAN};
-        Vertex currentVertex{NAN, NAN};
+        Vec2 lastVertex{NAN, NAN};
+        Vec2 currentVertex{NAN, NAN};
         for (int j = 0; j < shapeVertexCount; j++) {
             if (j == 0) {
                 lastVertex = shapeVertices[j];
@@ -214,7 +194,7 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
             }
         }
 
-        Vertex* toDelete = shapeVertices;
+        Vec2* toDelete = shapeVertices;
         shapeVertices = copyVertices(outputVertices);
         shapeVertexCount = int(outputVertices.size());
 
@@ -226,7 +206,7 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
     // We now have all our vertices for the clipped shape
     outputShape.Reset();
     for (Vec2 vec2: outputVertices) {
-        outputShape.AddVertex(Vertex{vec2.x, vec2.y});
+        outputShape.AddVertex(vec2);
     }
     outputShape.ToggleCloseLine();
 }

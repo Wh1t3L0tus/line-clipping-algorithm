@@ -10,6 +10,7 @@
 #include "../math/Math.h"
 
 class Shader;
+struct Vec2;
 
 class Shape {
 public:
@@ -18,16 +19,15 @@ public:
     ~Shape();
 
     void Draw(const Shader& shader);
-    void AddVertex(const Vertex& vertex);
+    void AddVertex(const Vec2& vertex);
     void ToggleCloseLine();
     void Reset();
 
-    const Vertex* GetVertices() const;
+    const Vec2* GetVertices() const;
     unsigned int GetVertexCount() const;
     bool IsClosed() const;
 
     void SetColor(const Color& color);
-    void FillShape(const Color& color, const Vertex& mousePos);
     void FillShape();
     void Clear();
 
@@ -35,11 +35,11 @@ public:
 
 private:
     Color shapeColor;
-    Vertex* vertices;
+    Vec2* vertices;
     int vertexCount;
     bool isClosed;
 
-    Vertex* filledAreaVertices;
+    Vec2* filledAreaVertices;
     int filledAreaVertexCount;
 };
 

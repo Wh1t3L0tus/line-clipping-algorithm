@@ -26,8 +26,6 @@ struct Vec2 {
         return Vec2{n * x, n * y};
     }
 
-    Vec2& Normalize();
-
     float GetMagnitude() const;
 };
 
@@ -83,10 +81,10 @@ public:
     static bool isPointVisible(const Vec2 &point, const Segment &windowSeg);
     static float dotProduct(const Vec2& a, const Vec2& b);
     static Vec2 getNormal(const Segment &segment);
-    static Segment makeSegment(const Vertex& a, const Vertex& b);
-    static std::vector<Segment> getSegmentsFromVertices(int vertexCount, const Vertex *vertices);
+    static Segment makeSegment(const Vec2& a, const Vec2& b);
+    static std::vector<Segment> getSegmentsFromVertices(int vertexCount, const Vec2 *vertices);
     static float getAngleBetween(const Vec2& a, const Vec2& b);
-    static bool isPointInside(const Vertex* vertices, unsigned int vertexCount, const Vec2& point);
+    static bool isPointInside(const Vec2* vertices, unsigned int vertexCount, const Vec2& point);
 };
 
 
