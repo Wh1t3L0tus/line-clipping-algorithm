@@ -25,6 +25,7 @@ public:
 	const Vertex* ReverseVertices() const;
     int GetVertexCount() const;
     bool IsClosed() const;
+	bool isClockwise() const;
 
     static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);
 

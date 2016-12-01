@@ -101,6 +101,16 @@ bool Shape::IsClosed() const {
     return isClosed;
 }
 
+bool Shape::isClockwise() const {
+	double sum = 0.0;
+	for (int i = 0; i < vertexCount; i++) {
+		Vertex v1 = vertices[i];
+		Vertex v2 = vertices[(i + 1) % vertexCount]; // % is the modulo operator
+		sum += (v2.x - v1.x) * (v2.y + v1.y);
+	}
+	return sum > 0.0; // Clockwise if true
+}
+
 Vertex* copyVertices(const vector<Vec2> &list) {
 
     if (list.size() == 0) {
@@ -131,29 +141,8 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
     int windowVertexCount = window.GetVertexCount();
     const Vertex* windowVertices = window.GetVertices();
 	// Methode pour inverser l'ordre des points si ils ont été entrés dans le mauvais sens (sens horaire)
-	int indexTopVertice = 0;
-	for (int i = 1; i < windowVertexCount; i++) // obtenir le vertice le plus haut placé
-	{
-		if (windowVertices[i].y > windowVertices[indexTopVertice].y)
-		{
-			indexTopVertice = i;
-		}
-	}
-	int startSeg, endSeg; // Index des points servant à faire le segment
-	if (indexTopVertice == 0)
-	{
-		startSeg = windowVertexCount - 1;
-	}
-	else
-	{
-		startSeg = indexTopVertice - 1;
-	}
-	endSeg = indexTopVertice;
-	Segment seg = Math::makeSegment(windowVertices[startSeg], windowVertices[endSeg]);
-	Vec2 pointToCheck = Vec2{ windowVertices[(indexTopVertice + 1) % windowVertexCount].x, windowVertices[(indexTopVertice + 1) % windowVertexCount].y }; // Point à testé, à 0 si le piont au sommet est le dernier du tableau de vertex
-	static bool checkOrder = Math::isPointVisible(pointToCheck, seg); //Normalement true = bon sens, false = mauvais sens
-	std::cout << checkOrder; 
-	if (!checkOrder) // Fenêtre entrée dans le mauvais sens
+	static bool checkOrder = window.isClockwise();
+	if (checkOrder) // Fenêtre entrée dans le mauvais sens (horaire)
 	{
 		windowVertices = window.ReverseVertices(); // inverse l'ordre des vertex de la shape
 	}
