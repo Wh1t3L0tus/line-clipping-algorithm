@@ -110,6 +110,38 @@ bool Shape::isClockwise() const {
 	}
 	return sum > 0.0; // Clockwise if true
 }
+bool Shape::isConvex() const {
+	if (vertexCount < 4)
+	{
+		return true;
+	}
+	bool sign = false;
+	for (int i = 0; i < vertexCount; i++)
+	{
+		Vertex v1 = vertices[i % vertexCount];
+		Vertex v2 = vertices[(i + 1) % vertexCount];
+		Vertex v3 = vertices[(i + 2) % vertexCount];
+		float dx1, dy1, dx2, dy2, crossP;
+		dx1 = v2.x - v1.x;
+		dy1 = v2.y - v1.y;
+		dx2 = v3.x - v2.x;
+		dy2 = v3.y - v2.y;
+		crossP = dx1*dy2 - dy1*dx2;
+		if (i == 0)
+		{
+			sign = crossP > 0;
+		}
+		else
+		{
+			if (sign != (crossP > 0)) // Si le Produit en croix est positif le coin testé est concave
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 
 Vertex* copyVertices(const vector<Vec2> &list) {
 
@@ -145,7 +177,23 @@ void Shape::ClipShapes(const Shape& window, const Shape &shape, Shape &outputSha
 	if (checkOrder) // Fenêtre entrée dans le mauvais sens (horaire)
 	{
 		windowVertices = window.ReverseVertices(); // inverse l'ordre des vertex de la shape
+		std::cout << "Fenetre inverse car dans le sens horaire \n";
 	}
+	else
+	{
+		std::cout << "Fenetre dans le sens anti-horaire \n";
+	}
+	// Methode pour vérifier si la fenêtre est convexe
+	if (!window.isConvex())
+	{
+		std::cout << "Fenetre CONCAVE \n";
+	}
+	else
+	{
+		std::cout << "Fenetre CONVEXE \n";
+	}
+
+
 
     int shapeVertexCount = shape.GetVertexCount();
     Vertex* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);

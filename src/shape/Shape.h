@@ -26,6 +26,7 @@ public:
     int GetVertexCount() const;
     bool IsClosed() const;
 	bool isClockwise() const;
+	bool isConvex() const;
 
     static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);
 
