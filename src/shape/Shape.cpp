@@ -88,7 +88,7 @@ Vertex* Shape::DupVertices() {
 	return vertices;
 }
 
-const Vertex* Shape::ReverseVertices() const {
+Vertex* Shape::ReverseVertices() {
 	Vertex* reversed = new Vertex[vertexCount];
 	for (int i = 0; i < vertexCount; i++)
 	{
@@ -170,12 +170,25 @@ Vertex* copyVertices(const Vertex* list, int size) {
     return array;
 }
 
-Shape* ClipShape(Shape* window, Shape &shape)
+void Shape::MakeCounterClockwise()
 {
+	// Methode pour inverser l'ordre des points si ils ont été entrés dans le mauvais sens (sens horaire) 
+	if (isClockwise()) // Fenêtre entrée dans le mauvais sens (horaire)
+	{
+		Vertex* windowVertices = vertices;
+		windowVertices = ReverseVertices(); // inverse l'ordre des vertex de la shape
+		vertices = windowVertices;
+		std::cout << "Fenetre inverse car dans le sens horaire \n";
+	}
+
+}
+
+Shape* Shape::ClipShapes(const Shape& window, const Shape &shape) {
+
 	vector<Vec2> outputVertices;
 
-	int windowVertexCount = window->GetVertexCount();
-	const Vertex* windowVertices = window->GetVertices();
+	int windowVertexCount = window.GetVertexCount();
+	const Vertex* windowVertices = window.GetVertices();
 
 	int shapeVertexCount = shape.GetVertexCount();
 	Vertex* shapeVertices = copyVertices(shape.GetVertices(), shapeVertexCount);
@@ -183,7 +196,7 @@ Shape* ClipShape(Shape* window, Shape &shape)
 	vector<Segment> windowSegments = Math::getSegmentsFromVertices(windowVertexCount, windowVertices);
 
 	for (int i = 0; i < windowSegments.size(); i++) {
-		//outputVertices.clear();
+		outputVertices.clear();
 
 		Vertex lastVertex{ NAN, NAN };
 		Vertex currentVertex{ NAN, NAN };
@@ -224,8 +237,7 @@ Shape* ClipShape(Shape* window, Shape &shape)
 
 	// We now have all our vertices for the clipped shape
 	Shape* output = new Shape();
-	for (Vec2 vec2 : outputVertices) 
-	{
+	for (Vec2 vec2 : outputVertices) {
 		output->AddVertex(Vertex{ vec2.x, vec2.y });
 	}
 	output->ToggleCloseLine();
@@ -233,7 +245,7 @@ Shape* ClipShape(Shape* window, Shape &shape)
 	return output;
 }
 
-
+/*
 vector<Shape*> Shape::ClipShapes(Shape& window, Shape &shape) {
 
 	vector<Shape*> clippedShapes;
@@ -270,6 +282,7 @@ vector<Shape*> Shape::ClipShapes(Shape& window, Shape &shape) {
 
 	return clippedShapes;
 }
+*/
 
 bool differentVertex(Vertex a, Vertex b)
 {
@@ -280,7 +293,7 @@ bool differentVertex(Vertex a, Vertex b)
 	return false;
 }
 
-bool isVertexInTriangle(Vertex cur, Vertex prev, Vertex next, Vertex* tab, int count) {	//Permet de connaitre si un des vertices d'une Shape est dans un triangle
+bool isVertexInTriangle(Vertex cur, Vertex prev, Vertex next, const Vertex* tab, int count) {	//Permet de connaitre si un des vertices d'une Shape est dans un triangle
 
 	for (int j = 0; j < count; j++) {
 		Vertex vtx = tab[j]; // Vertex testé comme interne ou externe au triangle
@@ -297,15 +310,15 @@ bool isVertexInTriangle(Vertex cur, Vertex prev, Vertex next, Vertex* tab, int c
 	return false;
 }
 
-vector<Shape*> Shape::Triangulate(Shape &window) 
+vector<Shape*> Shape::Triangulate(const Shape *window) 
 {
 	
 	Vertex cur, prev, next;
 
 	int nbTri = 0;
 
-	Vertex*  win = window.DupVertices();
-	int sizeWin = window.GetVertexCount();
+	const Vertex*  win = window->GetVertices();
+	int sizeWin = window->GetVertexCount();
 
 	vector<Shape*> miniWindows;
 	int leftPoints = sizeWin;

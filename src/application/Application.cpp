@@ -19,9 +19,11 @@ int height;
 
 bool showShape = true;
 bool showClipping = false;
+bool Triangulated = false;
 
 std::vector<Shape*> objects;
 std::vector<Shape*> clippedShapes;
+std::vector<Shape*> windows;
 Shape* window = new Shape();
 Shape* object = new Shape();
 //Shape clippedShape;
@@ -64,6 +66,13 @@ void Application::Update() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+	if (Triangulated)
+	{
+		for (int i = 0; i < windows.size(); i++)
+		{
+			windows[i]->Draw(shader, Color{ 0.0f, 0.0f, 1.0f, 1.0f });
+		}
+	}
     window->Draw(shader, Color{0.0f, 0.0f, 1.0f, 1.0f});
 
     if (showShape) 
@@ -82,6 +91,7 @@ void Application::Update() {
 			clippedShapes[i]->Draw(shader, Color{ 0.0f, 1.0f, 0.0f, 1.0f });
 		}
 	}
+
 	
     glutSwapBuffers();
 }
@@ -140,6 +150,21 @@ void Application::OnKeyboardStroke(unsigned char key, int mouseX, int mouseY) {
 
 void PushInTab()
 {
+	if (Triangulated)
+	{
+		Shape* clipped = new Shape();
+		for (int i = 0; i < windows.size(); i++)
+		{
+			for (int j = 0; j < objects.size(); j++)
+			{
+				clipped = Shape::ClipShapes(*windows[i], *objects[j]);
+				clippedShapes.push_back(clipped);
+				clipped = new Shape();
+			}
+		}
+	}
+	/*
+	for(int i=0 ; i<windows.size)
 	std::vector<Shape*> clipped = Shape::ClipShapes(*window, *objects[0]);
 	Shape* test = new Shape();
 	for (int i = 0; i < clipped.size(); i++)
@@ -148,6 +173,7 @@ void PushInTab()
 		clippedShapes.push_back(test);
 		test = new Shape();
 	}
+	*/
 }
 
 void InitMenu()
@@ -167,6 +193,7 @@ void InitMenu()
 	glutAddMenuEntry("New Window", 1);
 	glutAddMenuEntry("Close Window", 2);
 	glutAddMenuEntry("Clear Window", 3);
+	glutAddMenuEntry("Triangulate", 4);
 
 	colorMenu = glutCreateMenu(color_Menu);
 	glutAddMenuEntry("Red", 1);
@@ -241,11 +268,19 @@ void window_Menu(int option)
 		break;
 	case 2:
 		//Close Window
+		appState = ApplicationState::SHAPE_EDIT;
 		window->ToggleCloseLine();
 		break;
 	case 3:
 		//Clear Window
 		window->Reset();
+		windows.clear();
+		Triangulated = false;
+		break;
+	case 4:
+		Triangulated = true;
+		windows.clear();
+		windows = Shape::Triangulate(window);
 		break;
 	}
 }

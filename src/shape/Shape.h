@@ -24,16 +24,17 @@ public:
 
     const Vertex* GetVertices() const;
 	Vertex* Shape::DupVertices();
-	const Vertex* ReverseVertices() const;
+	Vertex* ReverseVertices();
     int GetVertexCount() const;
     bool IsClosed() const;
 	bool isClockwise() const;
 	bool isConvex() const;
 
+	void MakeCounterClockwise();
 
 	//static Shape* ClipShape(Shape* window, Shape shape);
-    static std::vector<Shape*> ClipShapes(Shape& window, Shape &shape);
-	static std::vector<Shape*> Triangulate(Shape &window);
+	static Shape* Shape::ClipShapes(const Shape& window, const Shape &shape);
+	static std::vector<Shape*> Triangulate(const Shape *window);
 
 private:
     Vertex* vertices;
