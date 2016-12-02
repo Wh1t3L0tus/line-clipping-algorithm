@@ -7,6 +7,7 @@
 
 
 #include "../utility/utils.h"
+#include <vector>
 
 class Shader;
 
@@ -22,13 +23,17 @@ public:
     void Reset();
 
     const Vertex* GetVertices() const;
+	Vertex* Shape::DupVertices();
 	const Vertex* ReverseVertices() const;
     int GetVertexCount() const;
     bool IsClosed() const;
 	bool isClockwise() const;
 	bool isConvex() const;
 
-    static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);
+
+	//static Shape* ClipShape(Shape* window, Shape shape);
+    static std::vector<Shape*> ClipShapes(Shape& window, Shape &shape);
+	static std::vector<Shape*> Triangulate(Shape &window);
 
 private:
     Vertex* vertices;

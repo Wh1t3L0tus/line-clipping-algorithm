@@ -7,12 +7,8 @@
 
 #include "../shader/Shader.h"
 #include "../shape/Shape.h"
+#include <vector>
 
-enum ApplicationState {
-    WINDOW_EDIT,
-    SHAPE_EDIT,
-    RENDER_RESULT
-};
 
 struct Vertex;
 
@@ -29,17 +25,9 @@ public:
     void OnMouseClick(int button, int state, int mouseX, int mouseY);
     void OnKeyboardStroke(unsigned char key, int mouseX, int mouseY);
 
-	
-
 private:
     int width;
     int height;
-
-    ApplicationState appState;
-
-    Shape window;
-    Shape object;
-    Shape clippedShape;
 
     Shader shader;
 };
@@ -48,6 +36,7 @@ void InitMenu();
 void menu_Selection(int option);
 void shape_Menu(int option);
 void window_Menu(int option);
+void clip_Menu(int option);
 void color_Menu(int option);
 
 #endif //LINE_CLIPPING_ALGORITHM_APPLICATION_H
