@@ -95,7 +95,7 @@ float GetMax(float n1, float n2) {
 }
 
 float GetInvertedSlope(const Segment& s) {
-    return (s.x2 - s.x1) / (s.y2 - s.y1);
+    return (s.y2 - s.y1) / (s.x2 - s.x1);
 }
 
 void InsertIn(std::vector<ScanLineElement>& list, ScanLineElement sce) {
@@ -106,13 +106,12 @@ void InsertIn(std::vector<ScanLineElement>& list, ScanLineElement sce) {
     list.insert(it, sce);
 }
 
-void CreateIntermediateStructure(const Vec2* vertices, unsigned int vertexCount, const BoundingBox& bb, int windowWidth, int windowHeight, std::vector<std::vector<ScanLineElement> >& intermediateStructure ) {
+void CreateIntermediateStructure(const Vec2* vertices, unsigned int vertexCount, const BoundingBox& bb, int windowWidth, int windowHeight, std::vector<std::vector<ScanLineElement>* >& intermediateStructure ) {
 
     std::vector<Segment> segments = Math::getSegmentsFromVertices(vertexCount, vertices);
 
     for (int i = bb.yMin; i < bb.yMax; i++) {
-        std::vector<ScanLineElement> list;
-        intermediateStructure.push_back(list);
+        intermediateStructure.push_back(new std::vector<ScanLineElement>());
     }
 
     for (Segment segment : segments) {
@@ -122,19 +121,19 @@ void CreateIntermediateStructure(const Vec2* vertices, unsigned int vertexCount,
                                 WorldToScreenSpace(GetMax(segment.y1, segment.y2), windowHeight),
                                 GetInvertedSlope(segment)};
 
-            std::vector<ScanLineElement>& currentHeightList = intermediateStructure[lowerPart];
-            std::vector<ScanLineElement>::iterator it = currentHeightList.begin();
-            while (it != currentHeightList.end() && it->xMin < sce.xMin) {
+            std::vector<ScanLineElement>* currentHeightList = intermediateStructure[lowerPart];
+            std::vector<ScanLineElement>::iterator it = currentHeightList->begin();
+            while (it != currentHeightList->end() && it->xMin < sce.xMin) {
                 it++;
             }
-            currentHeightList.insert(it, sce);
+            currentHeightList->insert(it, sce);
         }
     }
 
     delete [] vertices;
 }
 
-void AddScanLinesTo(std::vector<ScanLineElement>& list, std::vector<ScanLineElement>& toAdd) {
+void AddScanLinesTo(std::vector<ScanLineElement>& list, std::vector<ScanLineElement> toAdd) {
     for (ScanLineElement sce : toAdd) {
         InsertIn(list, sce);
     }
@@ -144,32 +143,25 @@ void FillingAlgorithm::ScanLineFill(const Vec2* vertices, unsigned int vertexCou
     int windowWidth = 800;
     int windowHeight = 600;
     std::vector<ScanLineElement> activatedEdgesList;
-    std::vector<std::vector<ScanLineElement> > intermediateStruct;
+    std::vector<std::vector<ScanLineElement>* > intermediateStruct;
     BoundingBox bb = GetScreenSpaceBoundingBox(vertices, vertexCount, windowWidth, windowHeight);
 
     CreateIntermediateStructure(vertices, vertexCount, bb, windowWidth, windowHeight, intermediateStruct);
 
     for (int currentHeight = 0; currentHeight < 600; currentHeight++) {
-        AddScanLinesTo(activatedEdgesList, intermediateStruct[currentHeight]);
+        AddScanLinesTo(activatedEdgesList, *intermediateStruct[currentHeight]);
 
         if (!activatedEdgesList.empty()) {
 
-            // Draw lines for the current height
-            auto it = activatedEdgesList.begin();
-            while (it != activatedEdgesList.end()) {
-                auto nextIt = it;
-                nextIt++;
-
-                Vec2 lineStart = ScreenToWorldSpace(it->xMin, currentHeight, windowWidth, windowHeight);
-                Vec2 lineEnd = ScreenToWorldSpace(nextIt->xMin, currentHeight, windowWidth, windowHeight);
+            for (int i = 0; i < activatedEdgesList.size(); i++) {
+                Vec2 lineStart = ScreenToWorldSpace(activatedEdgesList[i].xMin, currentHeight, windowWidth, windowHeight);
+                Vec2 lineEnd = ScreenToWorldSpace(activatedEdgesList[i + 1].xMin, currentHeight, windowWidth, windowHeight);
                 linesToDraw.push_back(Segment{lineStart.x, lineStart.y, lineEnd.x, lineEnd.y});
-                it++;
-                it++;
             }
 
             // Remove elements lower than current height from activatedEdgesList
             // and update xMin values
-            it = activatedEdgesList.begin();
+            auto it = activatedEdgesList.begin();
             while (it != activatedEdgesList.end()) {
                 if (currentHeight >= it->yMax) {
                     activatedEdgesList.erase(it++);

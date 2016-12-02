@@ -52,7 +52,7 @@ void Shape::Draw(const Shader& shader) {
 
             glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, filledAreaVertices);
             glEnableVertexAttribArray(positionLocation);
-            glDrawArrays(GL_LINE, 0, filledAreaVertexCount);
+            glDrawArrays(GL_POINTS, 0, filledAreaVertexCount);
             glEnableVertexAttribArray(positionLocation);
         }
 
