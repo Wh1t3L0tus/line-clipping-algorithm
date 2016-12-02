@@ -52,7 +52,7 @@ void Shape::Draw(const Shader& shader) {
 
             glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, filledAreaVertices);
             glEnableVertexAttribArray(positionLocation);
-            glDrawArrays(GL_POINTS, 0, filledAreaVertexCount);
+            glDrawArrays(GL_LINE, 0, filledAreaVertexCount);
             glEnableVertexAttribArray(positionLocation);
         }
 
@@ -140,6 +140,16 @@ void Shape::FillShape() {
     filledAreaVertices = new Vec2[filledAreaVertexCount];
     for (int i = 0; i < filledAreaVertexCount; i++) {
         filledAreaVertices[i] = filledArea[i];
+    }
+}
+
+void Shape::FillShape2() {
+    std::vector<Segment> filledArea;
+    FillingAlgorithm::ScanLineFill(GetVertices(), GetVertexCount(), filledArea);
+    filledAreaVertices = new Vec2[filledArea.size() * 2];
+    for (int i = 0; i < filledArea.size(); i++) {
+        filledAreaVertices[2 * i] = Vec2{filledArea[i].x1, filledArea[i].y1};
+        filledAreaVertices[2 * i + 1] = Vec2{filledArea[i].x2, filledArea[i].y2};
     }
 }
 

@@ -29,6 +29,7 @@ public:
 
     void SetColor(const Color& color);
     void FillShape();
+    void FillShape2();
     void Clear();
 
     static void ClipShapes(const Shape& window, const Shape &shape, Shape &outputShape);

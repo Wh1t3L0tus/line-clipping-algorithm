@@ -90,7 +90,7 @@ void Application::OnKeyboardStroke(unsigned char key, int mouseX, int mouseY) {
         window.ToggleCloseLine();
     }
     else if (key == 'f') {
-        window.FillShape();
+        window.FillShape2();
     }
     else if (key == 'F') {
         window.Clear();
