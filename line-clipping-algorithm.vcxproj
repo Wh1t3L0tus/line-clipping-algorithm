@@ -158,12 +158,14 @@ copy dependencies\freeglut\bin\freeglut.dll bin\freeglut.dll</Command>
   <ItemGroup>
     <ClCompile Include="src\application\Application.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\math\FillingAlgorithm.cpp" />
     <ClCompile Include="src\math\Math.cpp" />
     <ClCompile Include="src\shader\Shader.cpp" />
     <ClCompile Include="src\shape\Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application\Application.h" />
+    <ClInclude Include="src\math\FillingAlgorithm.h" />
     <ClInclude Include="src\math\Math.h" />
     <ClInclude Include="src\shader\Shader.h" />
     <ClInclude Include="src\shape\Shape.h" />

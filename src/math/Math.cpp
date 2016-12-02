@@ -3,6 +3,7 @@
 //
 
 #include <cfloat>
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
 #include "Math.h"

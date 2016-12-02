@@ -36,6 +36,9 @@
     <ClCompile Include="src\application\Application.cpp">
       <Filter>src\application</Filter>
     </ClCompile>
+    <ClCompile Include="src\math\FillingAlgorithm.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utility\utils.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="src\application\Application.h">
       <Filter>src\application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\FillingAlgorithm.h">
+      <Filter>src\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
