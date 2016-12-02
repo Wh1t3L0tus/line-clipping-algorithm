@@ -223,10 +223,7 @@ void shape_Menu(int option)
 	case 3:
 		//Clear Shape
 		object->Reset();
-		for (int i = 0; i < objects.size(); i++)
-		{
-			objects[i]->Reset();
-		}
+		objects.clear();
 		break;
 	}
 }
@@ -270,10 +267,7 @@ void clip_Menu(int option)
 		//Clear Clipping
 		showClipping = false;
 		showShape = true;
-		for (int i = 0; i < clippedShapes.size(); i++)
-		{
-			clippedShapes[i]->Reset();
-		}
+		clippedShapes.clear();
 		break;
 	}
 }
